@@ -23,7 +23,7 @@ export default (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     createArticle()
-      .then(article => res.status(200).json({ article: article }))
+      .then(article => res.status(200).json({ article: { id: article['insertId'], title: request.title, body: request.body } }))
       .catch(() => res.status(500).json({ error: '500: Exception caught' }));
   }
 }
