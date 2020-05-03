@@ -9,11 +9,16 @@ let poolConfig = {
   password: process.env.MYSQL_PASSWORD,
 };
 
-export default class DB {
-  static do = async (query: SQLStatement) => {
+class DB {
+  pool: mysql.Pool;
+
+  constructor() {
+    this.pool = mysql.createPool(poolConfig);
+  }
+
+  do = async (query: SQLStatement) => {
     try {
-      const pool = mysql.createPool(poolConfig);
-      const connection = await pool.getConnection();
+      const connection = await this.pool.getConnection();
       const [rows, fields] = await connection.query(query);
       connection.release();
       return rows;
@@ -22,3 +27,5 @@ export default class DB {
     }
   }
 }
+
+export default new DB();
