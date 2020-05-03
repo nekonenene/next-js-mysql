@@ -1,4 +1,4 @@
-const mysql = require('serverless-mysql')
+import mysql from 'serverless-mysql';
 
 const db = mysql({
   config: {
@@ -9,7 +9,7 @@ const db = mysql({
   }
 })
 
-exports.query = async query => {
+export const query = async query => {
   try {
     const results = await db.query(query)
     await db.end()
@@ -18,3 +18,5 @@ exports.query = async query => {
     return { error }
   }
 }
+
+export default query;
