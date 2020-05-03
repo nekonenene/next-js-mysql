@@ -1,22 +1,24 @@
-import mysql from 'serverless-mysql';
+import * as mysql from 'mysql2/promise';
+import { SQLStatement } from 'sql-template-strings';
 
-const db = mysql({
-  config: {
-    host: '127.0.0.1',
-    database: 'next_js_mysql',
-    user: 'root',
-    password: process.env.MYSQL_PASSWORD
-  }
-})
+let poolConfig = {
+  connectionLimit: 3,
+  host: '127.0.0.1',
+  database: 'next_js_mysql',
+  user: 'root',
+  password: process.env.MYSQL_PASSWORD,
+};
 
-export const query = async query => {
-  try {
-    const results = await db.query(query)
-    await db.end()
-    return results
-  } catch (error) {
-    return { error }
+export default class DB {
+  static do = async (query: SQLStatement) => {
+    try {
+      const pool = mysql.createPool(poolConfig);
+      const connection = await pool.getConnection();
+      const [rows, fields] = await connection.query(query);
+      connection.release();
+      return rows;
+    } catch (error) {
+      return { error }
+    }
   }
 }
-
-export default query;
