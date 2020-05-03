@@ -7,7 +7,6 @@ let poolConfig = {
   user: 'root',
   password: process.env.MYSQL_PASSWORD,
   charset: 'utf8mb4_bin',
-  timezone: 'UTC',
   waitForConnections: true,
   connectionLimit: 3,
 };
